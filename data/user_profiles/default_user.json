@@ -1,0 +1,12 @@
+{
+  "name": "Default User",
+  "interests": [
+    "artificial intelligence",
+    "machine learning",
+    "python",
+    "data science",
+    "technology"
+  ],
+  "matching_method": "keyword",
+  "min_relevance_score": 0.3
+}

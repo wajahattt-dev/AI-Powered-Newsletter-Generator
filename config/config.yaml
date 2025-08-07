@@ -1,0 +1,76 @@
+# Auto-Newsletter Generator Configuration
+
+# OpenAI API Configuration
+api:
+  # Your API key should be set as an environment variable OPENAI_API_KEY
+  model: "gpt-4o"  # Options: gpt-4o, gpt-4, gpt-3.5-turbo
+  temperature: 0.3
+  max_tokens: 1000
+
+# RSS Feed Sources
+rss_feeds:
+  - name: "BBC News - Technology"
+    url: "http://feeds.bbci.co.uk/news/technology/rss.xml"
+    category: "technology"
+  - name: "The Verge"
+    url: "https://www.theverge.com/rss/index.xml"
+    category: "technology"
+  - name: "Wired"
+    url: "https://www.wired.com/feed/rss"
+    category: "technology"
+  - name: "CNN - World"
+    url: "http://rss.cnn.com/rss/edition_world.rss"
+    category: "world"
+  - name: "New York Times - Science"
+    url: "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml"
+    category: "science"
+
+# User Profile and Interests
+user:
+  name: "Default User"
+  interests:
+    - "artificial intelligence"
+    - "machine learning"
+    - "python"
+    - "data science"
+    - "technology"
+  # Interest matching method: "keyword" or "embedding"
+  matching_method: "keyword"
+  # Minimum relevance score (0-1) for articles to be included
+  min_relevance_score: 0.3
+
+# Content Fetching Settings
+fetching:
+  max_articles_per_feed: 5
+  max_total_articles: 15
+  article_age_limit_days: 2
+  timeout_seconds: 10
+  user_agent: "Auto-Newsletter-Generator/1.0"
+
+# Summarization Settings
+summarization:
+  # Summary length: "short", "medium", or "long"
+  length: "medium"
+  # Include article quotes: true or false
+  include_quotes: true
+  # Extract key points as bullet points
+  extract_key_points: true
+  # Number of key points to extract
+  num_key_points: 3
+
+# Newsletter Generation Settings
+newsletter:
+  title: "Daily Tech Digest"
+  subtitle: "Your Personalized News Summary"
+  # Output formats: "markdown", "pdf", or "both"
+  output_format: "both"
+  # Include images from articles
+  include_images: true
+  # Include original article links
+  include_links: true
+  # Group articles by category
+  group_by_category: true
+  # Output directory (relative to project root)
+  output_dir: "data/output"
+  # Date format for newsletter filename
+  date_format: "%Y-%m-%d"
