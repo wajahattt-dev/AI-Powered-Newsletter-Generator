@@ -336,13 +336,49 @@ def display_newsletter(file_path: str):
     elif file_path.endswith(".pdf"):
         with open(file_path, "rb") as f:
             pdf_bytes = f.read()
-        st.download_button(
-            label="Download PDF",
-            data=pdf_bytes,
-            file_name=os.path.basename(file_path),
-            mime="application/pdf"
-        )
-        st.warning("PDF preview not available in Streamlit. Please download the file.")
+        
+        # PDF Preview and Download Section
+        col1, col2 = st.columns([1, 1])
+        
+        with col1:
+            st.download_button(
+                label="📄 Download PDF",
+                data=pdf_bytes,
+                file_name=os.path.basename(file_path),
+                mime="application/pdf",
+                use_container_width=True
+            )
+        
+        with col2:
+            # Create a base64 encoded version for preview
+            import base64
+            base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+            
+            # PDF Preview button that opens in new tab
+            pdf_display = f"""
+            <a href="data:application/pdf;base64,{base64_pdf}" target="_blank">
+                <button style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    padding: 0.75rem 1.5rem;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    width: 100%;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                ">
+                    👁️ Preview PDF
+                </button>
+            </a>
+            """
+            st.markdown(pdf_display, unsafe_allow_html=True)
+        
+        # Show PDF info
+        file_size = len(pdf_bytes) / 1024  # KB
+        st.info(f"📄 PDF Document • {file_size:.1f} KB • Click 'Preview PDF' to view in new tab")
 
 def run_newsletter_generation_offline(config: Dict, interests: List[str], profile_name: str = None) -> Dict[str, str]:
     """Run the newsletter generation process in offline mode (no AI API).
@@ -880,6 +916,8 @@ def main():
             padding: 0.5rem;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            justify-content: center;
+            display: flex;
         }
         
         .stTabs [data-baseweb="tab"] {
@@ -888,32 +926,48 @@ def main():
             color: rgba(240, 246, 252, 0.7);
             font-weight: 500;
             transition: all 0.3s ease;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            text-align: center;
+            min-width: 150px;
         }
         
         .stTabs [aria-selected="true"] {
             background: rgba(88, 166, 255, 0.15);
             color: #f0f6fc;
             box-shadow: 0 5px 20px rgba(88, 166, 255, 0.2);
+            transform: translateY(-2px);
         }
         
         /* Enhanced Dark Inputs */
         .stTextInput > div > div > input,
         .stTextArea > div > div > textarea {
-            border: 2px solid rgba(88, 166, 255, 0.2);
+            border: 2px solid rgba(88, 166, 255, 0.3);
             border-radius: 15px;
             padding: 1rem;
             font-size: 1rem;
+            font-weight: 500;
             transition: all 0.3s ease;
-            background: rgba(13, 17, 23, 0.8);
-            color: #f0f6fc;
+            background: rgba(21, 32, 43, 0.95);
+            color: #ffffff;
             backdrop-filter: blur(10px);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stTextInput > div > div > input::placeholder,
+        .stTextArea > div > div > textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
         }
         
         .stTextInput > div > div > input:focus,
         .stTextArea > div > div > textarea:focus {
             border-color: #58a6ff;
+            color: #ffffff;
+            background: rgba(30, 41, 59, 0.98);
             box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15),
-                        0 0 25px rgba(88, 166, 255, 0.2);
+                        0 0 25px rgba(88, 166, 255, 0.2),
+                        inset 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         /* Dark Glass Effect */
@@ -1205,6 +1259,8 @@ def main():
             border-radius: 15px;
             padding: 0.5rem;
             backdrop-filter: blur(10px);
+            justify-content: center;
+            display: flex;
         }
         
         .stTabs [data-baseweb="tab"] {
@@ -1213,29 +1269,46 @@ def main():
             color: rgba(255, 255, 255, 0.8);
             font-weight: 500;
             transition: all 0.3s ease;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            text-align: center;
+            min-width: 150px;
         }
         
         .stTabs [aria-selected="true"] {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
         
         /* Input Enhancement */
         .stTextInput > div > div > input,
         .stTextArea > div > div > textarea {
-            border: 2px solid rgba(26, 188, 156, 0.2);
+            border: 2px solid rgba(26, 188, 156, 0.3);
             border-radius: 15px;
             padding: 1rem;
             font-size: 1rem;
+            font-weight: 500;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
+            color: #2c3e50;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stTextInput > div > div > input::placeholder,
+        .stTextArea > div > div > textarea::placeholder {
+            color: rgba(44, 62, 80, 0.6);
+            font-weight: 400;
         }
         
         .stTextInput > div > div > input:focus,
         .stTextArea > div > div > textarea:focus {
             border-color: #1abc9c;
-            box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.15);
+            color: #2c3e50;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.15),
+                        inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         /* Sidebar Enhancement */
@@ -1363,7 +1436,7 @@ def main():
     
     st.markdown(f"""
     <div class="{header_class}">
-        <h1>🤖 AI Newsletter Generator</h1>
+        <h1>AI Newsletter Generator</h1>
         <p>🚀 Enter your interests and get a personalized newsletter powered by cutting-edge AI</p>
         <div style="text-align: center; margin-top: 1.5rem;">
             <span style="display: inline-block; margin: 0 1rem; opacity: 0.9; font-size: 0.9rem;">
@@ -1395,8 +1468,8 @@ def main():
                 <div style="display: flex; align-items: center;">
                     <div style="width: 20px; height: 20px; background: #10b981; border-radius: 50%; margin-right: 1rem;"></div>
                     <div>
-                        <h3 style="margin: 0; color: white;">🌟 Gemini AI Activated</h3>
-                        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Full AI features available - Premium summaries & analysis • {theme_status}</p>
+                        <h3 style="margin: 0; color: white;"> Gemini AI Activated</h3>
+                        <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Full AI features available - Premium summaries & analysis • </p>
                     </div>
                 </div>
             </div>
@@ -2059,20 +2132,51 @@ Be as specific or broad as you like! 🚀""",
                                 with open(file_path, "rb") as f:
                                     pdf_bytes = f.read()
                                 
-                                st.download_button(
-                                    label="📄 Download PDF",
-                                    data=pdf_bytes,
-                                    file_name=os.path.basename(file_path),
-                                    mime="application/pdf",
-                                    use_container_width=True
-                                )
+                                # Enhanced PDF handling with preview and download
+                                col_a, col_b = st.columns([1, 1])
+                                
+                                with col_a:
+                                    st.download_button(
+                                        label="📄 Download PDF",
+                                        data=pdf_bytes,
+                                        file_name=os.path.basename(file_path),
+                                        mime="application/pdf",
+                                        use_container_width=True
+                                    )
+                                
+                                with col_b:
+                                    # Create base64 encoded version for preview
+                                    import base64
+                                    base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                                    
+                                    # Styled preview button
+                                    pdf_preview = f"""
+                                    <a href="data:application/pdf;base64,{base64_pdf}" target="_blank">
+                                        <button style="
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            color: white;
+                                            border: none;
+                                            border-radius: 10px;
+                                            padding: 0.75rem 1.5rem;
+                                            font-size: 1rem;
+                                            font-weight: 600;
+                                            cursor: pointer;
+                                            width: 100%;
+                                            transition: all 0.3s ease;
+                                            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                                        ">
+                                            👁️ Preview PDF
+                                        </button>
+                                    </a>
+                                    """
+                                    st.markdown(pdf_preview, unsafe_allow_html=True)
                                 
                                 # Show PDF file info
                                 file_size = len(pdf_bytes) / 1024  # KB
                                 st.markdown(f"""
                                 <div class="interest-card" style="text-align: center; margin-top: 0.5rem;">
                                     <p style="margin: 0; color: #6b7280; font-size: 0.9rem;">
-                                        📄 PDF • {file_size:.1f} KB
+                                        📄 PDF • {file_size:.1f} KB • Preview opens in new tab
                                     </p>
                                 </div>
                                 """, unsafe_allow_html=True)
@@ -2265,7 +2369,7 @@ Be as specific or broad as you like! 🚀""",
         st.markdown("[wajahattthussain](https://linkedin.com/in/wajahattthussain)")
     
     with col3:
-        st.markdown("** Twitter**")
+        st.markdown("**Twitter**")
         st.markdown("[WajahattHussain](https://x.com/WajahattHussain)")
     
     with col4:

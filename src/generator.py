@@ -264,10 +264,16 @@ class NewsletterGenerator:
             
             # Create PDF with HTML support
             class PDF(FPDF, HTMLMixin):
+                def __init__(self):
+                    super().__init__()
+                    self.title = ""
+                    
                 def header(self):
-                    self.set_font('Arial', 'B', 12)
-                    self.cell(0, 10, self.title, 0, 1, 'C')
-                    self.ln(10)
+                    if hasattr(self, 'title') and self.title:
+                        self.set_font('Arial', 'B', 12)
+                        title_safe = str(self.title)[:50]  # Limit title length
+                        self.cell(0, 10, title_safe, 0, 1, 'C')
+                        self.ln(10)
                     
                 def footer(self):
                     self.set_y(-15)
@@ -276,9 +282,22 @@ class NewsletterGenerator:
             
             pdf = PDF()
             pdf.add_page()
-            pdf.set_title(self.newsletter_config['title'])
+            
+            # Set title safely
+            newsletter_title = self.newsletter_config.get('title', 'Newsletter')
+            if newsletter_title:
+                pdf.title = str(newsletter_title)
+                
             pdf.set_font("Arial", size=12)
-            pdf.write_html(html_content)
+            
+            # Clean HTML content for PDF
+            if html_content:
+                # Simple cleaning to handle encoding issues
+                html_content = html_content.replace('\u2019', "'").replace('\u2018', "'")
+                html_content = html_content.replace('\u201c', '"').replace('\u201d', '"')
+                html_content = html_content.replace('\u2013', '-').replace('\u2014', '-')
+                pdf.write_html(html_content)
+            
             pdf.output(str(output_path))
             
         except Exception as e:
